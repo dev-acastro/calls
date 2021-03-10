@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Call List</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+</head>
+<body>
+    <section class="container">
+        <div class="container-fluid">
+          <div class="row rowContainer" >
+            <div class="col-12 dataTableContainer" >
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Reporte de Llamadas</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <table id="Llamadas" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>Call Id</th>
+                        <th>De:</th>
+                        <th>Para:</th>
+                        <th>Usuario</th>
+                        <th>Duracion</th>
+                        <th>Fecha</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Call Id</th>
+                            <th>De:</th>
+                            <th>Para:</th>
+                            <th>Usuario</th>
+                            <th>Duracion</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+
+
+      <script>
+      $(document).ready( function () {
+        var t = $('#Llamadas').DataTable();
+
+        var data = JSON.stringify({
+                "data": {
+                    "username": "armicasdi@gmail.com",
+                    "password": "0123Castro"
+                }
+            });
+
+        var sessionId;
+
+
+        $.ajax({
+          type: 'POST',
+          url: "https://api.ringbyname.com/auth",
+          data: data,
+          success: function (response) {
+              sessionId = response.data.session_id
+
+
+              $.ajax({
+                type: 'GET',
+                url: "https://api.ringbyname.com/report-admin/call",
+                data: data,
+                beforeSend: function (request) {
+                      request.setRequestHeader("X-Session-Id", sessionId)
+                  },
+                success: function (response) {
+                  for (var i = 0; i < response.length; i++) {
+                 t.row.add([
+                   response.data.id,
+                   response.data.from,
+                   response.data.to,
+                   response.data.user_name,
+                   response.data.duration_seconds,
+                   response.data.date_created,
+
+                 ]);
+
+                 t.draw();
+             }
+
+
+
+         }
+
+       });
+                }
+
+              
+      });
+
+    });
+      </script>
+
+</body>
+</html>
