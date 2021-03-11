@@ -91,14 +91,21 @@
                       request.setRequestHeader("X-Session-Id", sessionId)
                   },
                 success: function (response) {
-                  for (var i = 0; i < response.length; i++) {
+                  var calls = response.data.rows;
+
+
+
+                  for (var i = 0; i < calls.length - 1; i++) {
+                    console.log(calls[i].id);
+
+
                  t.row.add([
-                   response.data.id,
-                   response.data.from,
-                   response.data.to,
-                   response.data.user_name,
-                   response.data.duration_seconds,
-                   response.data.date_created,
+                   calls[i].id,
+                   calls[i].from,
+                   calls[i].to,
+                   calls[i].user_name,
+                   calls[i].duration_seconds,
+                   calls[i].date_created,
 
                  ]);
 
@@ -112,7 +119,7 @@
        });
                 }
 
-              
+
       });
 
     });
