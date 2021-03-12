@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
@@ -23,6 +25,34 @@
                   <h3 class="card-title">Reporte de Llamadas</h3>
                 </div>
                 <!-- /.card-header -->
+
+                  <div>
+                      <form class="form-inline" style="padding: 10px; margin: 20px">
+                          <div class="form-group col-3">
+                              <label for="fechaInicial">Fecha Inicial</label>
+                              <input type="date" class="form-control" id="fechaInicial" placeholder="Fecha Inicial">
+                          </div>
+                          <div class="form-group col-3">
+                              <label for="fechaFinal">Fecha Final</label>
+                              <input type="date" class="form-control" id="fechaFinal" placeholder="Fecha Final">
+                          </div>
+
+                          <div class="form-group col-3">
+                              <label for="tipo">Tipo de Llamada</label>
+                              <select id="tipo">
+                                  <option>Todas</option>
+                                  <option>Entrantes</option>
+                                  <option>Salientes</option>
+                              </select>
+                          </div>
+
+                          <div class="form-group col-3">
+                              <label for="recorded">Grabaciones</label>
+                              <input type="checkbox" class="form-control" id="recorded" >
+                          </div>
+                          <button class="btn btn-success btn-block mt-3">Buscar</button>
+                      </form>
+                  </div>
                 <div class="card-body">
                   <table id="Llamadas" class="table table-bordered table-striped">
                     <thead>
@@ -33,6 +63,7 @@
                         <th>Usuario</th>
                         <th>Duracion</th>
                         <th>Fecha</th>
+                        <th>Grabacion</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -45,6 +76,7 @@
                             <th>Usuario</th>
                             <th>Duracion</th>
                             <th>Fecha</th>
+                            <th>Grabacion</th>
                         </tr>
                     </tfoot>
                   </table>
@@ -63,7 +95,9 @@
 
       <script>
       $(document).ready( function () {
-        var t = $('#Llamadas').DataTable();
+          var t = $('#Llamadas').DataTable();
+
+      });
 
         var data = JSON.stringify({
                 "data": {
@@ -96,7 +130,15 @@
 
 
                   for (var i = 0; i < calls.length - 1; i++) {
-                    console.log(calls[i].id);
+
+
+                    if(calls[i].type === "inbound_call_recording" || calls[i].type === "outbound_call_recording"){
+                          isRecorded =  "<span style='text-align: center' onclick='getRecord(" + calls[i].id + ")'><i class=\"fas fa-microphone-alt\"></i></span>";
+                      }else {
+                        isRecorded = "Not Recorded"
+                    }
+
+
 
 
                  t.row.add([
@@ -105,7 +147,7 @@
                    calls[i].to,
                    calls[i].user_name,
                    calls[i].duration_seconds,
-                   calls[i].date_created,
+                   calls[i].date_created, isRecorded
 
                  ]);
 
@@ -122,7 +164,10 @@
 
       });
 
-    });
+
+
+
+
       </script>
 
 </body>
